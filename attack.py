@@ -83,24 +83,23 @@ def get_act_reg(train_loader,T,device,Nsample=5000):
 def iden_loss(T,fake, iden, used_loss,criterion,fea_mean=0, fea_logvar=0,lam=0.1):
     Iden_Loss = 0
     loss_reg = 0
-    for tn in T:
-      
-        feat,out = tn(fake)
-        if used_loss == 'logit_loss': #reg only with the target classifier, reg is randomly from distribution
-            if Iden_Loss ==0:                
-                loss_sdt =  criterion(out, iden)
-                loss_reg = lam*reg_loss(feat,fea_mean[0], fea_logvar[0]) #reg only with the target classifier
 
-                Iden_Loss = Iden_Loss + loss_sdt  
-            else:                
-                loss_sdt =  criterion(out, iden)
-                Iden_Loss = Iden_Loss + loss_sdt
+    feat,out = tn(fake)
+    if used_loss == 'logit_loss': #reg only with the target classifier, reg is randomly from distribution
+        if Iden_Loss ==0:                
+            loss_sdt =  criterion(out, iden)
+            loss_reg = lam*reg_loss(feat,fea_mean[0], fea_logvar[0]) #reg only with the target classifier
 
-        else:
-            loss_sdt = criterion(out, iden)
+            Iden_Loss = Iden_Loss + loss_sdt  
+        else:                
+            loss_sdt =  criterion(out, iden)
             Iden_Loss = Iden_Loss + loss_sdt
 
-    Iden_Loss = Iden_Loss/len(T) + loss_reg
+    else:
+        loss_sdt = criterion(out, iden)
+        Iden_Loss = Iden_Loss + loss_sdt
+
+    Iden_Loss = Iden_Loss + loss_reg
     return Iden_Loss
 
 
