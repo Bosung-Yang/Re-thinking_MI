@@ -74,6 +74,14 @@ if __name__ == '__main__':
     E_HSIC.load_state_dict(ckp_E['state_dict'])
     Es.append(E_HSIC)
 
+    E_KD = model.VGG16_V(1000)
+    path_E = '/workspace/KDDMI/final_tars/KD.tar'
+    E_KD = nn.DataParallel(E_KD).cuda()
+    checkpoint = torch.load(path_E)
+    ckp_E = torch.load(path_E)
+    E_KD.load_state_dict(ckp_E['state_dict'])
+    Es.append(E_KD)
+
     g_path = "/workspace/KDDMI/KEDMI/KED_G.tar"
     G = generator.Generator()
     G = nn.DataParallel(G).cuda()
