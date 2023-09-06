@@ -5,7 +5,7 @@ import torch.nn.functional as F
 from utils import log_sum_exp, save_tensor_images
 from torch.autograd import Variable
 import torch.optim as optim
-
+import statistics
 
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
@@ -183,6 +183,50 @@ def dist_inversion(G, D, T, E, iden, lr=2e-2, momentum=0.9, lamda=100, \
         outputs_label = "{}_iter_{}_{}_label".format(prefix, random_seed, iter_times)
         np.save(outputs_z,{"mu":mu.detach().cpu().numpy(),"log_var":log_var.detach().cpu().numpy()})
         np.save(outputs_label,iden.detach().cpu().numpy())
+    res = []
+    res5 = []
+    seed_acc = torch.zeros((bs, 5))
+    for random_seed in range(num_seeds):
+        tf = time.time()
+        z = reparameterize(mu, log_var)
+        fake = G(z)
+        score = T(fake)[-1]
+        eval_prob = E(fake)[-1]
+        eval_iden = torch.argmax(eval_prob, dim=1).view(-1)
+        
+        cnt, cnt5 = 0, 0
+        for i in range(bs):
+            gt = iden[i].item()
+            sample = fake[i]
+            save_tensor_images(sample.detach(), os.path.join(save_img_dir, "attack_iden_{}_{}.png".format(gt, random_seed)))
+
+            if eval_iden[i].item() == gt:
+                seed_acc[i, random_seed] = 1
+                cnt += 1
+                best_img = G(z)[i]
+                no[i] += 1
+            _, top5_idx = torch.topk(eval_prob[i], 5)
+            if gt in top5_idx:
+                cnt5 += 1
+                
+        interval = time.time() - tf
+        res.append(cnt * 1.0 / bs)
+        res5.append(cnt5 * 1.0 / bs)
+
+        torch.cuda.empty_cache()
+        interval = time.time() - tf
+        print("Time:{:.2f}\tAcc:{:.2f}\t".format(interval, cnt * 100.0 / bs))
+        
+
+    acc = statistics.mean(res)
+    acc_5 = statistics.mean(res5)
+    acc_var = statistics.stdev(res)
+    acc_var5 = statistics.stdev(res5)
+    print("Acc:{:.2f}\tAcc_5:{:.2f}\tAcc_var:{:.4f}\tacc_var5{:.4f}".format(acc, acc_5, acc_var, acc_var5))
+
+    return acc, acc_5, acc_var, acc_var5
+ 
+
        
 def inversion(G, D, T, E, iden, lr=2e-2, momentum=0.9, lamda=100, \
                 iter_times=1500, clip_range=1, improved=False, num_seeds=5, \
