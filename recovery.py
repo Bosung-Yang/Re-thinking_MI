@@ -66,7 +66,7 @@ if __name__ == "__main__":
 
 
     E = model.VGG16_V(1000)
-    path_E = '/workspace/KDDMI/final_tars/VGG16_0.050_0.500_58.23_nopretrain.tar'
+    path_E = '/workspace/KDDMI/final_tars/VGG16_eval.tar'
     E = nn.DataParallel(E).cuda()
     checkpoint = torch.load(path_E)
     ckp_E = torch.load(path_E)
@@ -86,7 +86,7 @@ if __name__ == "__main__":
     # Load models
 
     T = model.VGG16(1000,True)
-    path_T = '/workspace/KDDMI/final_tars/VGG16.tar'
+    path_T = '/workspace/KDDMI/final_tars/VGG16_0.050_0.500_58.23_nopretrain.tar'
     T = nn.DataParallel(T).cuda()
     checkpoint = torch.load(path_T)
     ckp_T = torch.load(path_T)
