@@ -88,7 +88,7 @@ def iden_loss(T,fake, iden, used_loss,criterion,fea_mean=0, fea_logvar=0,lam=0.1
     if used_loss == 'logit_loss': #reg only with the target classifier, reg is randomly from distribution
         if Iden_Loss ==0:                
             loss_sdt =  criterion(out, iden)
-            loss_reg = lam*reg_loss(feat,fea_mean[0], fea_logvar[0]) #reg only with the target classifier
+            loss_reg = lam*reg_loss(feat,0,0) #reg only with the target classifier
 
             Iden_Loss = Iden_Loss + loss_sdt  
         else:                
