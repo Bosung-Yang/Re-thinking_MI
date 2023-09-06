@@ -92,17 +92,14 @@ if __name__ == '__main__':
             '{:.2f}'.format(aver_std),
             '{:.2f}'.format(aver_acc5),
             '{:.2f}'.format(aver_std5),
-            '{:.2f}'.format(fid),
-            '{:.2f}'.format(knn)]
+            ]
     
     print("---------------Evaluation---------------")
     print('Method: {} '.format(cfg["attack"]["method"]))
 
     print('Variant: {}'.format(cfg["attack"]["variant"]))
     print('Top 1 attack accuracy:{:.2f} +/- {:.2f} '.format(aver_acc, aver_std))
-    print('Top 5 attack accuracy:{:.2f} +/- {:.2f} '.format(aver_acc5, aver_std5))
-    print('KNN distance: {:.3f}'.format(knn))
-    print('FID score: {:.3f}'.format(fid))      
+    print('Top 5 attack accuracy:{:.2f} +/- {:.2f} '.format(aver_acc5, aver_std5))     
     
     print("----------------------------------------")  
     with open(csv_file, 'a') as f:
