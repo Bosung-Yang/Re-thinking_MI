@@ -45,7 +45,7 @@ if __name__ == '__main__':
         prefix = os.path.join(cfg["root_path"], "gmi_300ids") 
     save_folder = os.path.join("{}_{}".format(cfg["dataset"]["name"], cfg["dataset"]["model_name"]), cfg["attack"]["variant"])
     prefix = os.path.join(prefix, save_folder)
-    save_dir = os.path.join(prefix, "latent")
+    save_dir = 'attack_results/kedmi_300ids/celeba_VGG16/L_logit/latent/''
     save_img_dir = os.path.join(prefix, "imgs_{}".format(cfg["attack"]["variant"]))
 
     # Load models
