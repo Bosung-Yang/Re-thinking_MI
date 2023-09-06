@@ -77,7 +77,7 @@ if __name__ == '__main__':
 
        
     csv_file = os.path.join(prefix, 'Eval_results.csv') 
-    if not os.path.exists(csv_file):
+    if  os.path.exists(csv_file):
         header = ['Save_dir', 'Method', 'Succesful_samples',                    
                     'acc','std','acc5','std5',
                     'fid','knn']
