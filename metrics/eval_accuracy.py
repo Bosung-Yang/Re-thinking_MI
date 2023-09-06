@@ -24,7 +24,7 @@ def reparameterize(mu, logvar):
     return eps * std + mu
 
 
-device = torch.torch.cuda.is_available()
+device = 'cuda'
 
 def get_z(improved_gan, save_dir, loop, i, j):
     device = torch.torch.cuda.is_available()
@@ -43,7 +43,7 @@ def get_z(improved_gan, save_dir, loop, i, j):
         
         z = np.load(outputs_z)  
         iden = np.load(outputs_label)
-        z = torch.from_numpy(z).to(device)
+        z = torch.from_numpy(z).to('cuda')
     return z, iden
 
 def accuracy(fake_dir, E):
