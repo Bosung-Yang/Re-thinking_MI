@@ -125,7 +125,7 @@ def dist_inversion(G, D, T, E, iden, lr=2e-2, momentum=0.9, lamda=100, \
     solver = optim.Adam(params, lr=lr)
     outputs_z = "{}_iter_{}_{}_dis.npy".format(prefix, random_seed, iter_times-1)
     
-    if not os.path.exists(outputs_z):
+    if not os.path.exists(outputs_z,exist_ok=True):
         outputs_z = "{}_iter_{}_{}_dis".format(prefix, random_seed, 0)
         outputs_label = "{}_iter_{}_{}_label".format(prefix, random_seed, 0)
         np.save(outputs_z,{"mu":mu.detach().cpu().numpy(),"log_var":log_var.detach().cpu().numpy()})
