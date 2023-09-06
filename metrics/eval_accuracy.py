@@ -33,8 +33,8 @@ def get_z(improved_gan, save_dir, loop, i, j):
         outputs_label = os.path.join(save_dir, "{}_{}_iter_0_{}_label.npy".format(loop, i, 2399)) 
         
         dis = np.load(outputs_z, allow_pickle=True)  
-        mu = torch.from_numpy(dis.item().get('mu')).to(device)             
-        log_var = torch.from_numpy(dis.item().get('log_var')).to(device)
+        mu = torch.from_numpy(dis.item().get('mu')).to('cuda')             
+        log_var = torch.from_numpy(dis.item().get('log_var')).to('cuda')
         iden = np.load(outputs_label)
         z = reparameterize(mu, log_var) 
     else: #GMI
