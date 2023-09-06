@@ -5,7 +5,9 @@ from metrics.fid import eval_fid
 from utils import load_json, get_attack_model
 import os
 import csv 
-
+import model
+import generator 
+from discri import *
 parser = ArgumentParser(description='Evaluation')
 parser.add_argument('--configs', type=str, default='./config/celeba/attacking/celeba.json')    
 
@@ -45,11 +47,22 @@ if __name__ == '__main__':
         prefix = os.path.join(cfg["root_path"], "gmi_300ids") 
     save_folder = os.path.join("{}_{}".format(cfg["dataset"]["name"], cfg["dataset"]["model_name"]), cfg["attack"]["variant"])
     prefix = os.path.join(prefix, save_folder)
-    save_dir = 'attack_results/kedmi_300ids/celeba_VGG16/L_logit/latent/''
+    save_dir = 'attack_results/kedmi_300ids/celeba_VGG16/L_logit/latent/'
     save_img_dir = os.path.join(prefix, "imgs_{}".format(cfg["attack"]["variant"]))
 
     # Load models
-    _, E, G, _, _, _, _ = get_attack_model(args, cfg, eval_mode=True)
+    E = model.VGG16_V(1000)
+    path_E = '/workspace/KDDMI/final_tars/VGG16_eval.tar'
+    E = nn.DataParallel(E).cuda()
+    checkpoint = torch.load(path_E)
+    ckp_E = torch.load(path_E)
+    E.load_state_dict(ckp_E['state_dict'])
+
+    g_path = "/workspace/KDDMI/KEDMI/KED_G.tar"
+    G = generator.Generator()
+    G = nn.DataParallel(G).cuda()
+    ckp_G = torch.load(g_path)
+    G.load_state_dict(ckp_G['state_dict'], strict=False)
 
     # Metrics
     metric = cfg["attack"]["eval_metric"].split(',')
@@ -61,14 +74,9 @@ if __name__ == '__main__':
 
 
     
-    for metric_ in metric:
-        metric_ = metric_.strip()
-        if metric_ == 'fid':
-            fid, nsamples = eval_fid(G=G, E=E, save_dir=save_dir, cfg=cfg, args=args)
-        elif metric_ == 'acc':
-            aver_acc, aver_acc5, aver_std, aver_std5 = eval_accuracy(G=G, E=E, save_dir=save_dir, args=args)
-        elif metric_ == 'knn':
-            knn = eval_KNN(G=G, E=E, save_dir=save_dir, KNN_real_path=cfg["dataset"]["KNN_real_path"], args=args)
+
+    aver_acc, aver_acc5, aver_std, aver_std5 = eval_accuracy(G=G, E=E, save_dir=save_dir, args=args)
+
        
     csv_file = os.path.join(prefix, 'Eval_results.csv') 
     if not os.path.exists(csv_file):
