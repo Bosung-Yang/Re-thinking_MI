@@ -147,6 +147,7 @@ def eval_acc_class(G, E, save_dir, prefix, args):
     acc_class(filename,successful_imgs,E)
 
 def gen_samples(G, E, save_dir, improved_gan, n_iden=300, n_img=1):
+    
     total_gen = 0
     seed = 9
     torch.manual_seed(seed)
@@ -169,6 +170,7 @@ def gen_samples(G, E, save_dir, improved_gan, n_iden=300, n_img=1):
     E.eval()
     G.eval()
     if not os.path.exists(img_ids_path + 'full.npy'):
+        print('asd')
         for loop in range(1):
             for i in range(n_iden): #300 ides 
                 for j in range(n_img): #5 images/iden
