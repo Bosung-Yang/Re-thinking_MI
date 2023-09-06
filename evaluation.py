@@ -49,12 +49,30 @@ if __name__ == '__main__':
     save_img_dir = os.path.join(prefix, "imgs_{}".format(cfg["attack"]["variant"]))
 
     # Load models
-    E = model.VGG16_V(1000)
+    Es = []
+    E_VGG = model.VGG16_V(1000)
     path_E = '/workspace/KDDMI/final_tars/VGG16_eval.tar'
-    E = nn.DataParallel(E).cuda()
+    E_VGG = nn.DataParallel(E_VGG).cuda()
     checkpoint = torch.load(path_E)
     ckp_E = torch.load(path_E)
-    E.load_state_dict(ckp_E['state_dict'])
+    E_VGG.load_state_dict(ckp_E['state_dict'])
+    Es.append(E_VGG)
+
+    E_VIB = model.VGG16_vib(1000)
+    path_E = '/workspace/KDDMI/final_tars/VGG16_vib_beta0.010_57.23.tar'
+    E_VIB = nn.DataParallel(E_VIB).cuda()
+    checkpoint = torch.load(path_E)
+    ckp_E = torch.load(path_E)
+    E_VIB.load_state_dict(ckp_E['state_dict'])
+    Es.append(E_VIB)
+    
+    E_HSIC = model.VGG16(1000,True)
+    path_E = '/workspace/KDDMI/final_tars/VGG16_0.050_0.500_59.36.tar'
+    E_HSIC = nn.DataParallel(E_HSIC).cuda()
+    checkpoint = torch.load(path_E)
+    ckp_E = torch.load(path_E)
+    E_HSIC.load_state_dict(ckp_E['state_dict'])
+    Es.append(E_HSIC)
 
     g_path = "/workspace/KDDMI/KEDMI/KED_G.tar"
     G = generator.Generator()
@@ -72,36 +90,36 @@ if __name__ == '__main__':
 
 
     
+    for e in Es:
+        aver_acc, aver_acc5, aver_std, aver_std5 = eval_accuracy(G=G, E=e, save_dir=save_dir, args=args)
 
-    aver_acc, aver_acc5, aver_std, aver_std5 = eval_accuracy(G=G, E=E, save_dir=save_dir, args=args)
+        
+        csv_file = os.path.join(prefix, 'Eval_results.csv') 
+        if  os.path.exists(csv_file):
+            header = ['Save_dir', 'Method', 'Succesful_samples',                    
+                        'acc','std','acc5','std5',
+                        'fid','knn']
+            with open(csv_file, 'w') as f:                
+                writer = csv.writer(f)
+                writer.writerow(header)
+        
+        fields=['{}'.format(save_dir), 
+                '{}'.format(cfg["attack"]["method"]),
+                '{}'.format(cfg["attack"]["variant"]),
+                '{:.2f}'.format(aver_acc),
+                '{:.2f}'.format(aver_std),
+                '{:.2f}'.format(aver_acc5),
+                '{:.2f}'.format(aver_std5),
+                ]
+        
+        print("---------------Evaluation---------------")
+        print('Method: {} '.format(cfg["attack"]["method"]))
 
-       
-    csv_file = os.path.join(prefix, 'Eval_results.csv') 
-    if  os.path.exists(csv_file):
-        header = ['Save_dir', 'Method', 'Succesful_samples',                    
-                    'acc','std','acc5','std5',
-                    'fid','knn']
-        with open(csv_file, 'w') as f:                
+        print('Variant: {}'.format(cfg["attack"]["variant"]))
+        print('Top 1 attack accuracy:{:.2f} +/- {:.2f} '.format(aver_acc, aver_std))
+        print('Top 5 attack accuracy:{:.2f} +/- {:.2f} '.format(aver_acc5, aver_std5))     
+        
+        print("----------------------------------------")  
+        with open(csv_file, 'a') as f:
             writer = csv.writer(f)
-            writer.writerow(header)
-    
-    fields=['{}'.format(save_dir), 
-            '{}'.format(cfg["attack"]["method"]),
-            '{}'.format(cfg["attack"]["variant"]),
-            '{:.2f}'.format(aver_acc),
-            '{:.2f}'.format(aver_std),
-            '{:.2f}'.format(aver_acc5),
-            '{:.2f}'.format(aver_std5),
-            ]
-    
-    print("---------------Evaluation---------------")
-    print('Method: {} '.format(cfg["attack"]["method"]))
-
-    print('Variant: {}'.format(cfg["attack"]["variant"]))
-    print('Top 1 attack accuracy:{:.2f} +/- {:.2f} '.format(aver_acc, aver_std))
-    print('Top 5 attack accuracy:{:.2f} +/- {:.2f} '.format(aver_acc5, aver_std5))     
-    
-    print("----------------------------------------")  
-    with open(csv_file, 'a') as f:
-        writer = csv.writer(f)
-        writer.writerow(fields)
+            writer.writerow(fields)

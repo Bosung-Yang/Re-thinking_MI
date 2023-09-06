@@ -230,8 +230,8 @@ def gen_samples(G, E, save_dir, improved_gan, n_iden=300, n_img=1):
                         all_failure_imgs.append(failure_fake)
                         all_failure_id.append(failure_iden)
                         all_failure_fea.append(failure_eval_fea)     
-        np.save(img_ids_path+'full',{'imgs':all_imgs,'label':all_id,'fea':all_fea})
-        np.save(img_ids_path+'success',{'sucessful_imgs':all_sucessful_imgs,'label':all_sucessful_id,'sucessful_fea':all_sucessful_fea})
-        np.save(img_ids_path+'failure',{'failure_imgs':all_failure_imgs,'label':all_failure_id,'failure_fea':all_failure_fea})
+        #np.save(img_ids_path+'full',{'imgs':all_imgs,'label':all_id,'fea':all_fea})
+        #np.save(img_ids_path+'success',{'sucessful_imgs':all_sucessful_imgs,'label':all_sucessful_id,'sucessful_fea':all_sucessful_fea})
+        #np.save(img_ids_path+'failure',{'failure_imgs':all_failure_imgs,'label':all_failure_id,'failure_fea':all_failure_fea})
         
     return img_ids_path, total_gen
