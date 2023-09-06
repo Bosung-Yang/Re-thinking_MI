@@ -312,3 +312,46 @@ def get_attack_model(args, args_json, eval_mode=False):
     D.eval()
 
     return targetnets, E, G, D, n_classes, fea_mean, fea_logvar
+
+
+class LinearWeightNorm(torch.nn.Module):
+    def __init__(self, in_features, out_features, bias=True, weight_scale=None, weight_init_stdv=0.1):
+        super(LinearWeightNorm, self).__init__()
+        self.in_features = in_features
+        self.out_features = out_features
+        self.weight = Parameter(torch.randn(out_features, in_features) * weight_init_stdv)
+        if bias:
+            self.bias = Parameter(torch.zeros(out_features))
+        else:
+            self.register_parameter('bias', None)
+        if weight_scale is not None:
+            assert type(weight_scale) == int
+            self.weight_scale = Parameter(torch.ones(out_features, 1) * weight_scale)
+        else:
+            self.weight_scale = 1
+
+    def forward(self, x):
+        W = self.weight * self.weight_scale / torch.sqrt(torch.sum(self.weight ** 2, dim=1, keepdim=True))
+        return F.linear(x, W, self.bias)
+
+    def __repr__(self):
+        return self.__class__.__name__ + '(' \
+               + 'in_features=' + str(self.in_features) \
+               + ', out_features=' + str(self.out_features) \
+               + ', weight_scale=' + str(self.weight_scale) + ')'
+
+
+def weights_init(m):
+    if isinstance(m, model.MyConvo2d):
+        if m.conv.weight is not None:
+            if m.he_init:
+                init.kaiming_uniform_(m.conv.weight)
+            else:
+                init.xavier_uniform_(m.conv.weight)
+        if m.conv.bias is not None:
+            init.constant_(m.conv.bias, 0.0)
+    if isinstance(m, nn.Linear):
+        if m.weight is not None:
+            init.xavier_uniform_(m.weight)
+        if m.bias is not None:
+            init.constant_(m.bias, 0.0)
