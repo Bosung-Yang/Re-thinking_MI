@@ -19,7 +19,7 @@ def reg_loss(featureT,fea_mean, fea_logvar):
 
 def attack_acc(fake,iden,E,):
     
-    eval_prob = E(utils.low2high(fake))[-1]
+    eval_prob = E(fake)[-1]
     
     eval_iden = torch.argmax(eval_prob, dim=1).view(-1)
     
