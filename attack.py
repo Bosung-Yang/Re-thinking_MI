@@ -183,7 +183,11 @@ def dist_inversion(G, D, T, E, iden, lr=2e-2, momentum=0.9, lamda=100, \
         outputs_label = "{}_iter_{}_{}_label".format(prefix, random_seed, iter_times)
         np.save(outputs_z,{"mu":mu.detach().cpu().numpy(),"log_var":log_var.detach().cpu().numpy()})
         np.save(outputs_label,iden.detach().cpu().numpy())
-    
+    for i in range(bs):
+            gt = iden[i].item()
+            sample = fake[i]
+            save_tensor_images(sample.detach(), os.path.join('./res/', "attack_iden_{}_{}.png".format(gt, random_seed)))
+
  
 
        
