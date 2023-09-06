@@ -10,8 +10,40 @@ import statistics
 
 from metrics.fid import concatenate_list, gen_samples
 
+def reparameterize(mu, logvar):
+    """
+    Reparameterization trick to sample from N(mu, var) from
+    N(0,1).
+    :param mu: (Tensor) Mean of the latent Gaussian [B x D]
+    :param logvar: (Tensor) Standard deviation of the latent Gaussian [B x D]
+    :return: (Tensor) [B x D]
+    """
+    std = torch.exp(0.5 * logvar)
+    eps = torch.randn_like(std)
+
+    return eps * std + mu
+
 
 device = torch.torch.cuda.is_available()
+
+def get_z(improved_gan, save_dir, loop, i, j):
+    if improved_gan==True: #KEDMI
+        outputs_z = os.path.join(save_dir, "{}_{}_iter_0_{}_dis.npy".format(loop, i, 2399)) 
+        outputs_label = os.path.join(save_dir, "{}_{}_iter_0_{}_label.npy".format(loop, i, 2399)) 
+        
+        dis = np.load(outputs_z, allow_pickle=True)  
+        mu = torch.from_numpy(dis.item().get('mu')).to(device)             
+        log_var = torch.from_numpy(dis.item().get('log_var')).to(device)
+        iden = np.load(outputs_label)
+        z = reparameterize(mu, log_var) 
+    else: #GMI
+        outputs_z = os.path.join(save_dir, "{}_{}_iter_{}_{}_z.npy".format(save_dir, loop, i, j, 2399))
+        outputs_label = os.path.join(save_dir, "{}_{}_iter_{}_{}_label.npy".format(save_dir, loop, i, j, 2399)) 
+        
+        z = np.load(outputs_z)  
+        iden = np.load(outputs_label)
+        z = torch.from_numpy(z).to(device)
+    return z, iden
 
 def accuracy(fake_dir, E):
     
