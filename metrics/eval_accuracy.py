@@ -27,6 +27,7 @@ def reparameterize(mu, logvar):
 device = torch.torch.cuda.is_available()
 
 def get_z(improved_gan, save_dir, loop, i, j):
+    device = torch.torch.cuda.is_available()
     if improved_gan==True: #KEDMI
         outputs_z = os.path.join(save_dir, "{}_{}_iter_0_{}_dis.npy".format(loop, i, 2399)) 
         outputs_label = os.path.join(save_dir, "{}_{}_iter_0_{}_label.npy".format(loop, i, 2399)) 
