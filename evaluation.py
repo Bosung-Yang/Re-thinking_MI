@@ -56,7 +56,7 @@ if __name__ == '__main__':
     checkpoint = torch.load(path_E)
     ckp_E = torch.load(path_E)
     E_VGG.load_state_dict(ckp_E['state_dict'])
-    Es.append(E_VGG)
+    #Es.append(E_VGG)
 
     E_VIB = model.VGG16_vib(1000)
     path_E = '/workspace/KDDMI/final_tars/VGG16_vib_beta0.010_57.23.tar'
@@ -64,7 +64,7 @@ if __name__ == '__main__':
     checkpoint = torch.load(path_E)
     ckp_E = torch.load(path_E)
     E_VIB.load_state_dict(ckp_E['state_dict'])
-    Es.append(E_VIB)
+    #Es.append(E_VIB)
     
     E_HSIC = model.VGG16(1000,True)
     path_E = '/workspace/KDDMI/final_tars/VGG16_0.050_0.500_59.36.tar'
@@ -72,7 +72,7 @@ if __name__ == '__main__':
     checkpoint = torch.load(path_E)
     ckp_E = torch.load(path_E)
     E_HSIC.load_state_dict(ckp_E['state_dict'])
-    Es.append(E_HSIC)
+    #Es.append(E_HSIC)
 
     E_KD = model.VGG16_V(1000)
     path_E = '/workspace/KDDMI/final_tars/KD_lastest.tar'
