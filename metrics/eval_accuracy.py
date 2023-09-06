@@ -180,7 +180,7 @@ def gen_samples(G, E, save_dir, improved_gan, n_iden=5, n_img=5):
                         fake = G(z.to(device))
                         save_tensor_images(fake, os.path.join(save_dir, "gen_{}_{}.png".format(i,j)), nrow = 60)
 
-                        eval_fea, eval_prob = E(utils.low2high(fake))
+                        eval_fea, eval_prob = E(fake)
                         
                         ### successfully attacked samples       
                         eval_iden = torch.argmax(eval_prob, dim=1).view(-1)
