@@ -7,7 +7,7 @@ import os
 import csv 
 
 parser = ArgumentParser(description='Evaluation')
-parser.add_argument('--configs', type=str, default='./config/celeba/attacking/ffhq.json')    
+parser.add_argument('--configs', type=str, default='./config/celeba/attacking/celeba.json')    
 
 args = parser.parse_args()
 

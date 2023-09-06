@@ -5,7 +5,7 @@ import torch.nn.functional as F
 from utils import log_sum_exp, save_tensor_images
 from torch.autograd import Variable
 import torch.optim as optim
-
+from metrics.eval_accuracy import eval_accuracy, eval_acc_class
 
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
@@ -125,7 +125,7 @@ def dist_inversion(G, D, T, E, iden, lr=2e-2, momentum=0.9, lamda=100, \
     solver = optim.Adam(params, lr=lr)
     outputs_z = "{}_iter_{}_{}_dis.npy".format(prefix, random_seed, iter_times-1)
     
-    if not os.path.exists(outputs_z,exist_ok=True):
+    if not os.path.exists(outputs_z):
         outputs_z = "{}_iter_{}_{}_dis".format(prefix, random_seed, 0)
         outputs_label = "{}_iter_{}_{}_label".format(prefix, random_seed, 0)
         np.save(outputs_z,{"mu":mu.detach().cpu().numpy(),"log_var":log_var.detach().cpu().numpy()})
@@ -183,7 +183,7 @@ def dist_inversion(G, D, T, E, iden, lr=2e-2, momentum=0.9, lamda=100, \
         outputs_label = "{}_iter_{}_{}_label".format(prefix, random_seed, iter_times)
         np.save(outputs_z,{"mu":mu.detach().cpu().numpy(),"log_var":log_var.detach().cpu().numpy()})
         np.save(outputs_label,iden.detach().cpu().numpy())
-
+    
  
 
        
