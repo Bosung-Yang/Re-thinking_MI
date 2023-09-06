@@ -169,67 +169,67 @@ def gen_samples(G, E, save_dir, improved_gan, n_iden=300, n_img=1):
     
     E.eval()
     G.eval()
-    if not os.path.exists(img_ids_path + 'full.npy'):
-        print('asd')
-        for loop in range(1):
-            for i in range(n_iden): #300 ides 
-                for j in range(n_img): #5 images/iden
-                    z, iden = get_z(improved_gan, save_dir, loop, i, j)
-                    z = torch.clamp(z, -1.0, 1.0).float()
-                    total_gen = total_gen + z.shape[0]
-                    # calculate attack accuracy
-                    with torch.no_grad():
-                        fake = G(z.to(device))
-                        save_tensor_images(fake, os.path.join(save_dir, "gen_{}_{}.png".format(i,j)), nrow = 60)
+    #if not os.path.exists(img_ids_path + 'full.npy'):
+        
+    for loop in range(1):
+        for i in range(n_iden): #300 ides 
+            for j in range(n_img): #5 images/iden
+                z, iden = get_z(improved_gan, save_dir, loop, i, j)
+                z = torch.clamp(z, -1.0, 1.0).float()
+                total_gen = total_gen + z.shape[0]
+                # calculate attack accuracy
+                with torch.no_grad():
+                    fake = G(z.to(device))
+                    save_tensor_images(fake, os.path.join(save_dir, "gen_{}_{}.png".format(i,j)), nrow = 60)
 
-                        eval_fea, eval_prob = E(fake)
-                        
-                        ### successfully attacked samples       
-                        eval_iden = torch.argmax(eval_prob, dim=1).view(-1)
-                        eval_iden = torch.argmax(eval_prob, dim=1).view(-1)
-                        sucessful_iden = []
-                        failure_iden = []
-                        for id in range(iden.shape[0]):
-                            if eval_iden[id]==iden[id]:
-                                sucessful_iden.append(id)
-                            else:
-                                failure_iden.append(id)
-                        
-                        
-                        fake = fake.detach().cpu().numpy()
-                        eval_fea = eval_fea.detach().cpu().numpy()  
+                    eval_fea, eval_prob = E(fake)
                     
-                        all_imgs.append(fake)
-                        all_fea.append(eval_fea)
-                        all_id.append(iden)
-                          
-                        if len(sucessful_iden)>0:                              
-                            sucessful_iden = np.array(sucessful_iden)                            
-                            sucessful_fake = fake[sucessful_iden,:,:,:]                    
-                            sucessful_eval_fea = eval_fea[sucessful_iden,:]
-                            sucessful_iden = iden[sucessful_iden]
+                    ### successfully attacked samples       
+                    eval_iden = torch.argmax(eval_prob, dim=1).view(-1)
+                    eval_iden = torch.argmax(eval_prob, dim=1).view(-1)
+                    sucessful_iden = []
+                    failure_iden = []
+                    for id in range(iden.shape[0]):
+                        if eval_iden[id]==iden[id]:
+                            sucessful_iden.append(id)
                         else:
-                            sucessful_fake = []
-                            sucessful_iden = []
-                            sucessful_eval_fea = []
+                            failure_iden.append(id)
+                    
+                    
+                    fake = fake.detach().cpu().numpy()
+                    eval_fea = eval_fea.detach().cpu().numpy()  
+                
+                    all_imgs.append(fake)
+                    all_fea.append(eval_fea)
+                    all_id.append(iden)
                         
-                        all_sucessful_imgs.append(sucessful_fake)
-                        all_sucessful_id.append(sucessful_iden)
-                        all_sucessful_fea.append(sucessful_eval_fea)
+                    if len(sucessful_iden)>0:                              
+                        sucessful_iden = np.array(sucessful_iden)                            
+                        sucessful_fake = fake[sucessful_iden,:,:,:]                    
+                        sucessful_eval_fea = eval_fea[sucessful_iden,:]
+                        sucessful_iden = iden[sucessful_iden]
+                    else:
+                        sucessful_fake = []
+                        sucessful_iden = []
+                        sucessful_eval_fea = []
+                    
+                    all_sucessful_imgs.append(sucessful_fake)
+                    all_sucessful_id.append(sucessful_iden)
+                    all_sucessful_fea.append(sucessful_eval_fea)
 
-                        if len(failure_iden)>0: 
-                            failure_iden = np.array(failure_iden)
-                            failure_fake = fake[failure_iden,:,:,:]                    
-                            failure_eval_fea = eval_fea[failure_iden,:]
-                            failure_iden = iden[failure_iden]
-                        else:
-                            failure_fake = []
-                            failure_iden = []
-                            failure_eval_fea = []
-              
-                        all_failure_imgs.append(failure_fake)
-                        all_failure_id.append(failure_iden)
-                        all_failure_fea.append(failure_eval_fea)     
+                    if len(failure_iden)>0: 
+                        failure_iden = np.array(failure_iden)
+                        failure_fake = fake[failure_iden,:,:,:]                    
+                        failure_eval_fea = eval_fea[failure_iden,:]
+                        failure_iden = iden[failure_iden]
+                    else:
+                        failure_fake = []
+                        failure_iden = []
+                        failure_eval_fea = []
+            
+                    all_failure_imgs.append(failure_fake)
+                    all_failure_id.append(failure_iden)
+                    all_failure_fea.append(failure_eval_fea)     
         np.save(img_ids_path+'full',{'imgs':all_imgs,'label':all_id,'fea':all_fea})
         np.save(img_ids_path+'success',{'sucessful_imgs':all_sucessful_imgs,'label':all_sucessful_id,'sucessful_fea':all_sucessful_fea})
         np.save(img_ids_path+'failure',{'failure_imgs':all_failure_imgs,'label':all_failure_id,'failure_fea':all_failure_fea})
