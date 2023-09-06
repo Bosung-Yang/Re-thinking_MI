@@ -89,16 +89,17 @@ if __name__ == '__main__':
     G.load_state_dict(ckp_G['state_dict'], strict=False)
 
     # Metrics
-    metric = cfg["attack"]["eval_metric"].split(',')
-    fid = 0
-    aver_acc, aver_acc5, aver_std, aver_std5 = 0, 0, 0, 0
-    knn = 0, 0
-    nsamples = 0 
-    dataset, model_types = '', ''
+
 
 
     
     for e in Es:
+        metric = cfg["attack"]["eval_metric"].split(',')
+        fid = 0
+        aver_acc, aver_acc5, aver_std, aver_std5 = 0, 0, 0, 0
+        knn = 0, 0
+        nsamples = 0 
+        dataset, model_types = '', ''
         aver_acc, aver_acc5, aver_std, aver_std5 = eval_accuracy(G=G, E=e, save_dir=save_dir, args=args)
 
         
