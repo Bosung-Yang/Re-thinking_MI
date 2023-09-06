@@ -146,7 +146,7 @@ def eval_acc_class(G, E, save_dir, prefix, args):
     
     acc_class(filename,successful_imgs,E)
 
-def gen_samples(G, E, save_dir, improved_gan, n_iden=5, n_img=5):
+def gen_samples(G, E, save_dir, improved_gan, n_iden=300, n_img=1):
     total_gen = 0
     seed = 9
     torch.manual_seed(seed)
