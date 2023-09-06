@@ -223,8 +223,8 @@ def get_GAN(dataset, gan_type, gan_model_dir, n_classes, z_dim, target_model):
 
     if gan_type == True:
         path = os.path.join(os.path.join(gan_model_dir, dataset), target_model)
-        path_G = os.path.join(path, "improved_{}_G.tar".format(dataset))
-        path_D = os.path.join(path, "improved_{}_D.tar".format(dataset))
+        path_G = '/workspace/KDDMI/KEDMI/G.tar'
+        path_D = '/workspace/KDDMI/KEDMI/D.tar'
     else:
         path = os.path.join(gan_model_dir, dataset)
         path_G = os.path.join(path, "{}_G.tar".format(dataset))

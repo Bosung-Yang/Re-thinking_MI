@@ -7,12 +7,14 @@ import os
 import numpy as np
 from attack import inversion, dist_inversion
 from argparse import  ArgumentParser
-
-
+import model
+from generator import *
+from discri import *
+import torch, os, time, random, generator, discri
 torch.manual_seed(9)
 
 parser = ArgumentParser(description='Inversion')
-parser.add_argument('--configs', type=str, default='./config/celeba/attacking/ffhq.json')    
+parser.add_argument('--configs', type=str, default='./config/celeba/attacking/celeba.json')    
 
 args = parser.parse_args()
 
@@ -62,9 +64,36 @@ if __name__ == "__main__":
     os.makedirs(save_img_dir, exist_ok=True)
     os.makedirs(save_dir, exist_ok=True)
 
-    
+
+    E = model.VGG16_V(1000)
+    path_E = '/workspace/KDDMI/final_tars/VGG16_eval.tar'
+    E = nn.DataParallel(E).cuda()
+    checkpoint = torch.load(path_E)
+    ckp_E = torch.load(path_E)
+    E.load_state_dict(ckp_E['state_dict'])
+
+    g_path = "/workspace/KDDMI/KEDMI/KED_G.tar"
+    G = generator.Generator()
+    G = nn.DataParallel(G).cuda()
+    ckp_G = torch.load(g_path)
+    G.load_state_dict(ckp_G['state_dict'], strict=False)
+
+    d_path = "/workspace/KDDMI/KEDMI/KED_D.tar"
+    D = discri.MinibatchDiscriminator()
+    D = nn.DataParallel(D).cuda()
+    ckp_D = torch.load(d_path)
+    D.load_state_dict(ckp_D['state_dict'], strict=False)
     # Load models
-    targetnets, E, G, D, n_classes, fea_mean, fea_logvar = get_attack_model(args, cfg)
+
+    T = model.VGG16_V(1000)
+    path_T = '/workspace/KDDMI/final_tars/VGG16.tar'
+    T = nn.DataParallel(T).cuda()
+    checkpoint = torch.load(path_T)
+    ckp_T = torch.load(path_T)
+    T.load_state_dict(ckp_T['state_dict'])
+    targetnets = T
+    fea_mean, fea_logvar = 0,0
+    n_classes = 1000
     N = 5
     bs = 60
     
