@@ -1,7 +1,5 @@
 from argparse import  ArgumentParser
-from metrics.KNN_dist import eval_KNN
 from metrics.eval_accuracy import eval_accuracy, eval_acc_class
-from metrics.fid import eval_fid
 from utils import load_json, get_attack_model
 import os
 import csv 
