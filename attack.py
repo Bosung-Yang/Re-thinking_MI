@@ -171,7 +171,7 @@ def dist_inversion(G, D, T, E, iden, lr=2e-2, momentum=0.9, lamda=100, \
                     if clipz==True:
                         z =  torch.clamp(z,-clip_range, clip_range).float()
                     fake_img = G(z.detach())
-                    eval_prob = E(utils.low2high(fake_img))[-1]
+                    eval_prob = E(fake_img)[-1]
                     
                     eval_iden = torch.argmax(eval_prob, dim=1).view(-1)
                     acc = iden.eq(eval_iden.long()).sum().item() * 100.0 / bs
