@@ -8,7 +8,7 @@ import numpy as np
 from attack import attack_acc
 import statistics 
 
-from metrics.fid import concatenate_list, gen_samples
+#from metrics.fid import concatenate_list, gen_samples
 
 
 device = torch.torch.cuda.is_available()
