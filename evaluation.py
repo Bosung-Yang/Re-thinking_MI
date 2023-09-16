@@ -82,7 +82,7 @@ if __name__ == '__main__':
     E_KD.load_state_dict(ckp_E['state_dict'])
     Es.append(E_KD)
 
-    g_path = "/workspace/KDDMI/KEDMI/KED_G.tar"
+    g_path = "KED_G.tar"
     G = generator.Generator()
     G = nn.DataParallel(G).cuda()
     ckp_G = torch.load(g_path)
@@ -101,6 +101,10 @@ if __name__ == '__main__':
         nsamples = 0 
         dataset, model_types = '', ''
         aver_acc, aver_acc5, aver_std, aver_std5 = eval_accuracy(G=G, E=e, save_dir=save_dir, args=args)
+        aver_acc *= 5
+        aver_acc5 *= 5
+        aver_std *=5
+        aver_std5 *=5
 
         
         csv_file = os.path.join(prefix, 'Eval_results.csv') 
@@ -129,6 +133,8 @@ if __name__ == '__main__':
         print('Top 5 attack accuracy:{:.2f} +/- {:.2f} '.format(aver_acc5, aver_std5))     
         
         print("----------------------------------------")  
+        print()
+        print()
         with open(csv_file, 'a') as f:
             writer = csv.writer(f)
             writer.writerow(fields)

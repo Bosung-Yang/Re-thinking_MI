@@ -72,13 +72,13 @@ if __name__ == "__main__":
     ckp_E = torch.load(path_E)
     E.load_state_dict(ckp_E['state_dict'])
 
-    g_path = "/workspace/KDDMI/KEDMI/KED_G.tar"
+    g_path = "KED_G.tar"
     G = generator.Generator()
     G = nn.DataParallel(G).cuda()
     ckp_G = torch.load(g_path)
     G.load_state_dict(ckp_G['state_dict'], strict=False)
 
-    d_path = "/workspace/KDDMI/KEDMI/KED_D.tar"
+    d_path = "KED_D.tar"
     D = discri.MinibatchDiscriminator()
     D = nn.DataParallel(D).cuda()
     ckp_D = torch.load(d_path)
