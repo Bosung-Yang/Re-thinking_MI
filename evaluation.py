@@ -74,8 +74,8 @@ if __name__ == '__main__':
     E_HSIC.load_state_dict(ckp_E['state_dict'])
     Es.append(E_HSIC)
 
-    E_KD = model.VGG16_V(1000)
-    path_E = '/workspace/KDDMI/final_tars/KD_lastest.tar'
+    E_KD = model.VGG16_V(2000)
+    path_E = '/workspace/KDDMI/final_tars/MCKD.tar'
     E_KD = nn.DataParallel(E_KD).cuda()
     checkpoint = torch.load(path_E)
     ckp_E = torch.load(path_E)
