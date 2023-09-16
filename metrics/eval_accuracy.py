@@ -76,7 +76,7 @@ def accuracy(fake_dir, E):
                 acc,acc5 = attack_acc(fake,label,E)
 
                 
-                print("Seed:{} Top1/Top5:{:.3f}/{:.3f}\t".format(random_seed, acc,acc5))
+                #print("Seed:{} Top1/Top5:{:.3f}/{:.3f}\t".format(random_seed, acc,acc5))
                 res.append(acc)
                 res5.append(acc5)
                 
@@ -86,13 +86,13 @@ def accuracy(fake_dir, E):
                     std = statistics.stdev(res)
                     std5 = statistics.stdev(res5)
 
-                    print("Top1/Top5:{:.3f}/{:.3f}, std top1/top5:{:.3f}/{:.3f}".format(acc, acc_5, std, std5))
+                    #print("Top1/Top5:{:.3f}/{:.3f}, std top1/top5:{:.3f}/{:.3f}".format(acc, acc_5, std, std5))
 
                     aver_acc += acc / N
                     aver_acc5 += acc5 / N
                     aver_std += std / N
                     aver_std5 +=  std5 / N
-            print('N_succesful',N_succesful,N_failure)
+            #print('N_succesful',N_succesful,N_failure)
 
 
     return aver_acc, aver_acc5, aver_std, aver_std5
