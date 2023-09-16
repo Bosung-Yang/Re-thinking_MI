@@ -85,8 +85,8 @@ if __name__ == "__main__":
     D.load_state_dict(ckp_D['state_dict'], strict=False)
     # Load models
 
-    T = model.VGG16_vib(1000)
-    path_T = '/workspace/KDDMI/final_tars/VGG16_vib_beta0.010_57.23.tar'
+    T = model.VGG16_V(2000)
+    path_T = '/workspace/KDDMI/final_tars/MCKD.tar'
     T = nn.DataParallel(T).cuda()
     checkpoint = torch.load(path_T)
     ckp_T = torch.load(path_T)
