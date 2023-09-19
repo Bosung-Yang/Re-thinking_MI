@@ -86,7 +86,7 @@ if __name__ == "__main__":
     # Load models
 
     T = model.VGG16_V(1000)
-    path_T = '/workspace/KDDMI/final_tars/eval/VGG16_80.09.tar'
+    path_T = '/workspace/KDDMI/final_tars/student-BiDO_73.45.tar'
     T = nn.DataParallel(T).cuda()
     checkpoint = torch.load(path_T)
     ckp_T = torch.load(path_T)
