@@ -51,7 +51,7 @@ if __name__ == '__main__':
     # Load models
     Es = []
     E_VGG = model.VGG16_V(1000)
-    path_E = '/workspace/KDDMI/final_tars/VGG16_eval.tar'
+    path_E = '/workspace/KDDMI/final_tars/eval/VGG16_80.09.tar'
     E_VGG = nn.DataParallel(E_VGG).cuda()
     checkpoint = torch.load(path_E)
     ckp_E = torch.load(path_E)
@@ -59,7 +59,7 @@ if __name__ == '__main__':
     Es.append(E_VGG)
 
     E_VIB = model.VGG16_vib(1000)
-    path_E = '/workspace/KDDMI/final_tars/VGG16_vib_beta0.010_57.23.tar'
+    path_E = '/workspace/KDDMI/final_tars/eval/VIB_teacher_0.010_62.25.tar'
     E_VIB = nn.DataParallel(E_VIB).cuda()
     checkpoint = torch.load(path_E)
     ckp_E = torch.load(path_E)
@@ -67,7 +67,7 @@ if __name__ == '__main__':
     Es.append(E_VIB)
     
     E_HSIC = model.VGG16(1000,True)
-    path_E = '/workspace/KDDMI/final_tars/VGG16_0.050_0.500_59.36.tar'
+    path_E = '/workspace/KDDMI/final_tars/teacher/BiDO_teacher_71.78_0.1_0.1.tar'
     E_HSIC = nn.DataParallel(E_HSIC).cuda()
     checkpoint = torch.load(path_E)
     ckp_E = torch.load(path_E)

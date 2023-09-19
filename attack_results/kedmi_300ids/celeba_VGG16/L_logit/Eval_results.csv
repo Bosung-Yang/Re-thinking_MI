@@ -1,2 +1,2 @@
 Save_dir,Method,Succesful_samples,acc,std,acc5,std5,fid,knn
-attack_results/kedmi_300ids/celeba_VGG16/L_logit/latent/,kedmi,L_logit,58.67,2.98,81.67,4.71
+attack_results/kedmi_300ids/celeba_VGG16/L_logit/latent/,kedmi,L_logit,26.33,8.03,55.00,5.94
